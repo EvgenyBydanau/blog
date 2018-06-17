@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load bootstrap3 staticfiles %}
+
+{% block content %}
+
+    <h1>{{ title }}</h1>
+    <form method="POST" action="" class="post-form" enctype="multipart/form-data" novalidate="novalidate">
+        {% csrf_token %}
+        {% bootstrap_field form.email  %}
+        {% bootstrap_field form.password  %}
+        <input type="submit" value="{{ title }}">
+    </form>
+
+{% endblock %}
