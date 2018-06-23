@@ -3,12 +3,47 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
-
-import json
-
+from collections import Counter
+import operator
+import datetime
 from .models import Post
 from .forms import PostForm, CommentForm
+
+
+def post_list(request, date=None):
+    if date:
+        date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+        posts_list = Post.objects.filter(timestamp__month=date.month,
+                                         timestamp__year=date.year).order_by("-timestamp")
+    else:
+        posts_list = Post.objects.all().order_by("-timestamp")
+    paginator = Paginator(posts_list, 5)
+
+    posts_list_all = Post.objects.all().order_by("-timestamp")
+    posts_sorted_by_date = sorted(posts_list_all, key=operator.attrgetter('timestamp'), reverse=True)
+    '''
+     Converting this format '2018-06-23 13:39:35.005500+00:00' to '2018-06-01' 
+     then making list with tuples [(date(year, month, 1), number of posts)]
+     which is number of posts for specific year-month 
+     '''
+    year_month = []
+    for post in posts_sorted_by_date:
+        date = str(post.timestamp).split("-", 2)[:2]
+        new_date = "-".join(date)
+        new_date_object = datetime.datetime.strptime(new_date, "%Y-%m").date()
+        year_month.append(new_date_object)
+    unique_year_month = list(Counter(year_month).items())
+
+    page = request.GET.get('page')
+    try:
+        posts = paginator.page(page)
+    except PageNotAnInteger:
+
+        posts = paginator.page(1)
+    except EmptyPage:
+        posts = paginator.page(paginator.num_pages)
+
+    return render(request, "post_list.html", locals())
 
 
 @login_required(login_url='/login/')
@@ -20,44 +55,12 @@ def post_create(request):
         instance.save()
         messages.success(request, "The post was successfully created")
         return HttpResponseRedirect(instance.get_absolute_url())
-    # else:
-    #     messages.error(request, "There was an error")
-
-    context = {
-        "form": form
-    }
-    return render(request, "post_form.html", context)
+    return render(request, "post_form.html", locals())
 
 
 def post_detail(request, id=None):
     instance = get_object_or_404(Post, id=id)
-    context = {
-        "instance": instance
-    }
-    return render(request, "post_detail.html", context)
-
-
-def post_list(request):
-    # print(request.session.keys())
-    # print(request.session['_auth_user_id'])
-
-    posts_list = Post.objects.all().order_by("-timestamp")
-    paginator = Paginator(posts_list, 5)  # Show 25 contacts per page
-
-    page = request.GET.get('page')
-    try:
-        posts = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-       posts = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-       posts = paginator.page(paginator.num_pages)
-    context = {
-       "posts": posts
-    }
-    return render(request, "post_list.html", context)
-
+    return render(request, "post_detail.html", locals())
 
 
 def post_update(request, id=None):
