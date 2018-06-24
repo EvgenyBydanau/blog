@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
 from collections import Counter
-import operator
 import datetime
 from .models import Post
 from .forms import PostForm, CommentForm
@@ -20,16 +19,16 @@ def post_list(request, date=None):
     paginator = Paginator(posts_list, 5)
 
     posts_list_all = Post.objects.all().order_by("-timestamp")
-    posts_sorted_by_date = sorted(posts_list_all, key=operator.attrgetter('timestamp'), reverse=True)
     '''
-     Converting this format '2018-06-23 13:39:35.005500+00:00' to '2018-06-01' 
-     then making list with tuples [(date(year, month, 1), number of posts)]
-     which is number of posts for specific year-month 
+     Convert datetime object to str '2018-06-01'
+     then convert this str to  datetime object '2018-06-01'
+     then make list with tuples [(date(year, month, 1), number of posts)]
+     which is number of posts for specific year-month
      '''
     year_month = []
-    for post in posts_sorted_by_date:
-        date = str(post.timestamp).split("-", 2)[:2]
-        new_date = "-".join(date)
+    posts_timestamps = Post.objects.values_list('timestamp', flat=True)
+    for date in posts_timestamps:
+        new_date = date.strftime('%Y-%m')
         new_date_object = datetime.datetime.strptime(new_date, "%Y-%m").date()
         year_month.append(new_date_object)
     unique_year_month = list(Counter(year_month).items())
