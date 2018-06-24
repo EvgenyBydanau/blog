@@ -37,11 +37,25 @@
             </a>
             <a class="blog-nav-item pull-right" href="{% url "register" %}"><span
                     class="glyphicon glyphicon-user"></span> Register</a>
-            <a class="blog-nav-item pull-right" href="{% url "login" %}"><span
-                    class="glyphicon glyphicon-log-in"></span> Login</a>
-            <a class="blog-nav-item pull-right" href="{% url "logout" %}"><span
-                    class="glyphicon glyphicon-log-out"></span> Logout</a>
+            {% if not request.user.is_authenticated %}
+                <a class="blog-nav-item pull-right" href="{% url "login" %}">
+                    <span class="glyphicon glyphicon-log-in"></span>
+                    Login
+                </a>
+            {% endif %}
 
+            {% if request.user.is_authenticated %}
+                <ul class="blog-nav-item pull-right">
+                    <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Welcome, {{ request.user }}</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="{% url "logout" %}"><span class="glyphicon glyphicon-log-out"></span>Logout</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
         </nav>
     </div>
 </div>
@@ -105,5 +119,14 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
         integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
         crossorigin="anonymous"></script>
+<script>
+    $(document).ready(function () {
+        $('ul li.dropdown').hover(function () {
+            $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn(200);
+        }, function () {
+            $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut(200);
+        });
+    });
+</script>
 </body>
 </html>

@@ -17,8 +17,6 @@ def post_list(request, date=None):
     else:
         posts_list = Post.objects.all().order_by("-timestamp")
     paginator = Paginator(posts_list, 5)
-
-    posts_list_all = Post.objects.all().order_by("-timestamp")
     '''
      Convert datetime object to str '2018-06-01'
      then convert this str to  datetime object '2018-06-01'
@@ -26,7 +24,7 @@ def post_list(request, date=None):
      which is number of posts for specific year-month
      '''
     year_month = []
-    posts_timestamps = Post.objects.values_list('timestamp', flat=True)
+    posts_timestamps = Post.objects.values_list('timestamp', flat=True).order_by('-timestamp')
     for date in posts_timestamps:
         new_date = date.strftime('%Y-%m')
         new_date_object = datetime.datetime.strptime(new_date, "%Y-%m").date()

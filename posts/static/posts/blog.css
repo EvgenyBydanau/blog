@@ -49,6 +49,13 @@ h6, .h6 {
   font-weight: 500;
   color: #cdddeb;
 }
+.blog-nav-item li {
+  list-style-type: none;
+}
+.blog-nav-item a {
+ text-decoration: none;
+ color: #fff;
+}
 .blog-nav-item:hover,
 .blog-nav-item:focus {
   color: #fff;
