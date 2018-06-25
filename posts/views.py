@@ -7,6 +7,7 @@ from collections import Counter
 import datetime
 from .models import Post
 from .forms import PostForm, CommentForm
+from .decorators import superuser_only, user_is_post_author
 
 
 def post_list(request, date=None):
@@ -44,6 +45,7 @@ def post_list(request, date=None):
 
 
 @login_required(login_url='/login/')
+@superuser_only
 def post_create(request):
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -60,6 +62,9 @@ def post_detail(request, id=None):
     return render(request, "post_detail.html", locals())
 
 
+@login_required(login_url='/login/')
+@superuser_only
+@user_is_post_author
 def post_update(request, id=None):
     instance = get_object_or_404(Post, id=id)
     form = PostForm(request.POST or None, request.FILES or None, instance=instance)
@@ -68,11 +73,7 @@ def post_update(request, id=None):
         instance.save()
         messages.success(request, "The post was successfully updated")
         return HttpResponseRedirect(instance.get_absolute_url())
-    context={
-        "instance": instance,
-        "form": form
-    }
-    return render(request, "post_form.html", context)
+    return render(request, "post_form.html", locals())
 
 
 def post_delete(request, id=None):

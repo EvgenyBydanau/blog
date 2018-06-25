@@ -1,36 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
+     <a class="btn btn-info" href="{% url 'posts:update' instance.id %}">Edit post</a>
+     <p></p>
     {% if instance.image %}
- <img style = "width:800px; height:400px"src = "{{ instance.image.url }}" class = "img-responsive"/>
+        <img style="width:800px; height:400px" src="{{ instance.image.url }}" class="img-responsive"/>
     {% endif %}
-<h1>{{instance.title }}</h1>
-<p>{{ instance.content }}</p>
-<p>Author: {{ instance.user }}</p>
+
+    <h1>{{ instance.title }}</h1>
+    <p>{{ instance.content }}</p>
+    <p>Author: {{ instance.user }}</p>
 
     <div>
 
-    <a class="btn btn-success" href="{% url 'posts:comment_add' instance.id %}">Add comment</a>
-
-
-      <h1>Comments</h1>
-
-
-    <div class="panel panel-default">
-         <div class="panel-body">
-     {% for comment in instance.comment_set.all  %}
-                 <div class="">
-                  <div class="">{{ comment.timestamp }}</div>
-                   <strong>{{ comment.user }}</strong>
-                  <p>{{ comment.content|linebreaks }}</p>
-                 <hr style="width: 100%; color: black; height: 1px; background-color:black;" />
-                 </div>
-            {% endfor %}
-       </div>
-    </div>
-
-
-
+        <a class="btn btn-success" href="{% url 'posts:comment_add' instance.id %}">Add comment</a>
+        <h1>Comments</h1>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                {% for comment in instance.comment_set.all %}
+                    <div class="">
+                        <div class="">{{ comment.timestamp }}</div>
+                        <strong>{{ comment.user }}</strong>
+                        <p>{{ comment.content|linebreaks }}</p>
+                        <hr style="width: 100%; color: black; height: 1px; background-color:black;"/>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 
 {% endblock %}
