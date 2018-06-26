@@ -171,3 +171,17 @@ h6, .h6 {
 .blog-footer p:last-child {
   margin-bottom: 0;
 }
+
+/*
+ * Messages
+ */
+body .message {
+  font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+  padding: 5px;
+  list-style-type: none;
+  margin-top: 5px;
+  color: #428bca;
+  background-color: cornsilk;
+  text-align: center;
+  border:  2px solid olivedrab;
+}
