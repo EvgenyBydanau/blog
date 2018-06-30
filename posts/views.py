@@ -3,20 +3,43 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from itertools import chain
 from collections import Counter
 import datetime
-from .models import Post
+from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from .decorators import superuser_only_user_post_author
 
 
 def post_list(request, date=None):
     if date:
-        date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
-        posts_list = Post.objects.filter(timestamp__month=date.month,
-                                         timestamp__year=date.year).order_by("-timestamp")
+        if 'q' in request.GET:
+            query = request.GET.get('q')
+            date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            posts_list = Post.objects.filter(Q(timestamp__month=date.month), Q(timestamp__year=date.year),
+                                             Q(title__icontains=query) | Q(content__contains=query)).order_by('-timestamp')
+            '''Look for q in comments'''
+            posts_with_comments = Post.objects.filter(Q(timestamp__month=date.month), Q(timestamp__year=date.year),
+                                                        comment__content__icontains=query).order_by('-timestamp')
+            '''Exclude multiple posts'''
+            posts_list = set(list(chain(posts_list, posts_with_comments)))
+            posts_list = sorted(posts_list, key=lambda x: x.timestamp, reverse=True)
+        else:
+            date = datetime.datetime.strptime(date, "%Y-%m-%d").date()
+            posts_list = Post.objects.filter(timestamp__month=date.month,
+                                             timestamp__year=date.year).order_by("-timestamp")
     else:
-        posts_list = Post.objects.all().order_by("-timestamp")
+        if 'q' in request.GET:
+            query = request.GET.get('q')
+            posts_list = Post.objects.filter(Q(title__icontains=query) | Q(content__contains=query)).order_by('-timestamp')
+            '''Look for q in comments'''
+            posts_with_comments = Post.objects.filter(comment__content__icontains=query).order_by('-timestamp')
+            '''Exclude multiple posts'''
+            posts_list = set(list(chain(posts_list, posts_with_comments)))
+            posts_list = sorted(posts_list, key=lambda x: x.timestamp, reverse=True)
+        else:
+            posts_list = Post.objects.all().order_by("-timestamp")
     paginator = Paginator(posts_list, 5)
     '''
      Convert datetime object to str '2018-06-01'
