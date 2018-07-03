@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-     <a class="btn btn-info" href="{% url 'posts:update' instance.id %}">Edit post</a>
-     <p></p>
+    {% if request.user.is_superuser %}
+        <a class="btn btn-info" href="{% url 'posts:update' instance.id %}">Edit post</a>
+        <a class="btn btn-danger" href="{% url 'posts:delete' instance.id %}">Delete post</a>
+    {% endif %}
+    <p></p>
     {% if instance.image %}
         <img style="width:800px; height:400px" src="{{ instance.image.url }}" class="img-responsive"/>
     {% endif %}

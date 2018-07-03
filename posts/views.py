@@ -9,7 +9,7 @@ from collections import Counter
 import datetime
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
-from .decorators import superuser_only_user_post_author
+from .decorators import superuser_only, user_is_post_author
 
 
 def post_list(request, date=None):
@@ -68,7 +68,7 @@ def post_list(request, date=None):
 
 
 @login_required(login_url='/login/')
-@superuser_only_user_post_author
+@superuser_only
 def post_create(request):
     form = PostForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -86,7 +86,7 @@ def post_detail(request, id=None):
 
 
 @login_required(login_url='/login/')
-@superuser_only_user_post_author
+@user_is_post_author
 def post_update(request, id=None):
     instance = get_object_or_404(Post, id=id)
     form = PostForm(request.POST or None, request.FILES or None, instance=instance)
@@ -98,6 +98,7 @@ def post_update(request, id=None):
     return render(request, "post_form.html", locals())
 
 
+@user_is_post_author
 def post_delete(request, id=None):
     instance = get_object_or_404(Post, id=id)
     instance.delete()
