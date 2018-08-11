@@ -44,16 +44,19 @@ def post_list(request, date=None):
     '''
      Convert datetime object to str '2018-06-01'
      then convert this str to  datetime object '2018-06-01'
-     then make list with tuples [(date(year, month, 1), number of posts)]
-     which is number of posts for specific year-month
-     '''
+    '''
     year_month = []
     posts_timestamps = Post.objects.values_list('timestamp', flat=True).order_by('-timestamp')
     for date in posts_timestamps:
         new_date = date.strftime('%Y-%m')
         new_date_object = datetime.datetime.strptime(new_date, "%Y-%m").date()
         year_month.append(new_date_object)
-    unique_year_month = list(Counter(year_month).items())
+    """
+    Counter - counts number of post occurrences in year_month list
+    then make list with tuples [(date(year, month, 1), number of posts)]
+    which is number of posts for specific year-month
+    """
+    unique_year_month = reversed(sorted(list(Counter(year_month).items())))
 
     page = request.GET.get('page')
     try:
