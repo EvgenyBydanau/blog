@@ -11,7 +11,6 @@ urlpatterns = [
     url(r'^$', views.post_list, name="list"),
     url(r'^(?P<id>[0-9]+)/edit/$', views.post_update, name="update"),
     url(r'^(?P<id>[0-9]+)/delete/$', views.post_delete, name="delete"),
-    url(r'^(?P<id>[0-9]+)/comment_add/$', views.add_comment_to_post, name="comment_add"),
 
     # Autocomplete
     url(r'^country-autocomplete/$', CountryAutocomplete.as_view(),  name='country-autocomplete',)

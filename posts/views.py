@@ -10,6 +10,7 @@ import datetime
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from .decorators import superuser_only, user_is_post_author
+from django.contrib.contenttypes.models import ContentType
 
 
 def post_list(request, date=None):
@@ -85,6 +86,27 @@ def post_create(request):
 
 def post_detail(request, id=None):
     instance = get_object_or_404(Post, id=id)
+    comments = instance.comments
+
+    initial_data = {
+        "content_type": instance.get_content_type,
+        "object_id": instance.id
+    }
+    form = CommentForm(request.POST or None, initial=initial_data)
+    if form.is_valid():
+        c_type = form.cleaned_data.get('content_type')
+        content_type = ContentType.objects.get(model=c_type)
+        obj_id = form.cleaned_data.get('object_id')
+        content_data = form.cleaned_data.get('content')
+        new_comment, created = Comment.objects.get_or_create(
+                                    user=request.user,
+                                    content_type=content_type,
+                                    object_id=obj_id,
+                                    content=content_data
+                                   )
+        if created:
+            print("qwerty")
+
     return render(request, "post_detail.html", locals())
 
 
@@ -107,25 +129,6 @@ def post_delete(request, id=None):
     instance.delete()
     messages.success(request, "The post was deleted")
     return redirect("posts:list")
-
-
-@login_required(login_url='/login/')
-def add_comment_to_post(request, id):
-    title = "Add comment"
-    post = get_object_or_404(Post, id=id)
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.user = request.user
-            comment.save()
-            return redirect('posts:detail', id=id)
-    else:
-        form = CommentForm()
-    return render(request, 'add_comment.html', {'form': form, "title": title})
-
-
 
 
 

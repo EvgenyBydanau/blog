@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load bootstrap3 %}
 
 {% block content %}
     {% if request.user.is_superuser %}
@@ -15,12 +16,16 @@
     <p>Author: {{ instance.user }}</p>
 
     <div>
-
-        <a class="btn btn-success" href="{% url 'posts:comment_add' instance.id %}">Add comment</a>
         <h1>Comments</h1>
+        <form method="POST" action="" class="post-form" enctype="multipart/form-data" novalidate="novalidate">
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <input type="submit" value="Submit">
+        </form>
+
         <div class="panel panel-default">
             <div class="panel-body">
-                {% for comment in instance.comment_set.all %}
+                {% for comment in comments %}
                     <div class="">
                         <div class="">{{ comment.timestamp }}</div>
                         <strong>{{ comment.user }}</strong>

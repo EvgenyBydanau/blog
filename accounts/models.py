@@ -40,7 +40,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserAccountManager()
 
     email = models.EmailField('email', unique=True, blank=False, null=False)
-    full_name = models.CharField('full name', blank=True, null=True, max_length=400)
+    last_name = models.CharField('last_name', blank=True, null=True, max_length=400)
+    first_name = models.CharField('first_name', blank=True, null=True, max_length=400)
     is_staff = models.BooleanField('staff status', default=False)
     country = models.CharField('country', blank=True, null=True, max_length=255)
     birth_date = models.DateField('birth_date', blank=True, null=True)
