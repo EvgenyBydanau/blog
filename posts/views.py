@@ -104,9 +104,7 @@ def post_detail(request, id=None):
                                     object_id=obj_id,
                                     content=content_data
                                    )
-        if created:
-            print("qwerty")
-
+        return redirect("posts:detail", id=instance.id)
     return render(request, "post_detail.html", locals())
 
 
