@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
@@ -11,6 +11,11 @@ from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from .decorators import superuser_only, user_is_post_author
 from django.contrib.contenttypes.models import ContentType
+import csv
+import os
+from django.conf import settings
+from matplotlib import pyplot as plt
+import six
 
 
 def post_list(request, date=None):
@@ -127,6 +132,28 @@ def post_delete(request, id=None):
     instance.delete()
     messages.success(request, "The post was deleted")
     return redirect("posts:list")
+
+
+def get_weather(request):
+    filename = os.path.join(settings.MEDIA_ROOT, 'weather.csv')
+    with open(filename) as f:
+        reader = csv.reader(f)
+        header_row = next(reader)
+        highs = []
+        for row in reader:
+            highs.append(row[1])
+        # fig = plt.figure(dpi=128, figsize=(10, 6))
+        plt.plot(highs, c='red')
+        plt.title("Daily high temperatures, July 2014", fontsize=24)
+        plt.xlabel('', fontsize=16)
+        plt.ylabel("Temperature (F)", fontsize=16)
+        plt.tick_params(axis='both', which='major', labelsize=16)
+        # plt.show()
+        plt.savefig(os.path.join(settings.MEDIA_ROOT, 'graphic.jpg'))
+        image_path = os.path.join("/media/", "graphic.jpg")
+        return render(request, 'graphic.html', {'image_path': image_path})
+
+
 
 
 
