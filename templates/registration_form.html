@@ -2,16 +2,141 @@
 {% load bootstrap3 staticfiles %}
 
 {% block content %}
-
     <h1>{{ title }}</h1>
     <form method="POST" action="" class="post-form" enctype="multipart/form-data" novalidate="novalidate">
         {% csrf_token %}
         {% bootstrap_field form.email %}
-        {% bootstrap_field form.email2  %}
-        {% bootstrap_field form.password  %}
+        {% bootstrap_field form.email2 %}
+        {% bootstrap_field form.password %}
         {% bootstrap_field form.country %}
         {% bootstrap_field form.birth_date %}
+
+        <h3>User phones </h3>
+        {{ formset.management_form }}
+        <div class="wrapper">
+            <div class="hide_phone" style="margin-bottom: 10px">
+                {{ formset.empty_form.code.label }}
+                {{ formset.empty_form.code }}
+                {{ formset.empty_form.number.label }}
+                {{ formset.empty_form.number }}
+                <a href="#" class="close remove" style="color: red">Delete</a>
+            </div>
+
+            {% for form in formset %}
+                <div class="myform phone phone-container" style="margin-bottom: 10px">
+                    {{ form.code.label }}
+                    {{ form.code }}
+                    {{ form.number.label }}
+                    {{ form.number }}
+                </div>
+                <a href="#" class="remove"></a>
+            {% endfor %}
+
+            <a href="#" class="add_form phone" style="color: #3875d7">Add</a>
+        </div>
         <input type="submit" value="{{ title }}">
     </form>
-{{ form.media }}
+    {{ form.media }}
+
+    <script type="text/javascript">
+
+        function add_form(prefix) {
+            var input_total_forms = $('input[name="' + prefix + '-TOTAL_FORMS"]');
+
+            var col_forms = input_total_forms.attr("value");
+            $('input[name="' + prefix + '-TOTAL_FORMS"]').attr("value", parseInt(col_forms) + 1)
+            $('input[name="' + prefix + '-INITIAL_FORMS"]').attr("value", parseInt(col_forms) + 1)
+            var new_div = $('div.hide_' + prefix).clone(true).get(0);
+            $(new_div).attr("class", "myform " + prefix)
+
+            $(new_div).find('input').each(function () {
+                var name = $(this).attr("name").split('-')[2];
+                $(this).attr("name", prefix + "-" + parseInt(col_forms) + "-" + name);
+                $(this).attr("id", "id_" + prefix + "-" + parseInt(col_forms) + "-" + name);
+
+            });
+
+            $(new_div).find('textarea').each(function () {
+                var name = $(this).attr("name").split('-')[2];
+                $(this).attr("name", prefix + "-" + parseInt(col_forms) + "-" + name);
+                $(this).attr("id", "id_" + prefix + "-" + parseInt(col_forms) + "-" + name);
+
+            });
+
+            $(new_div).find('select').each(function () {
+                var name = $(this).attr("name").split('-')[2];
+                $(this).attr("name", prefix + "-" + parseInt(col_forms) + "-" + name);
+                $(this).attr("id", "id_" + prefix + "-" + parseInt(col_forms) + "-" + name);
+
+            })
+
+            if ($("div." + prefix).length) {
+                $(new_div).fadeIn('normal').insertAfter($('div.' + prefix + ':last').get(0));
+            }
+            else {
+                $(new_div).fadeIn('normal').insertAfter($('div.hide_' + prefix).get(0));
+            }
+            return false;
+        }
+
+        function delete_form(a, prefix) {
+            var el = $(a).parents('div.' + prefix);
+            console.log(el);
+            el.removeClass(prefix);
+
+            el.fadeOut('normal', function () {
+                el.remove();
+            });
+
+            /* $(a).parents('div.myform').fadeOut('normal', function() {
+                $(a).parents('div.myform').remove()
+            }); */
+
+            var form = $("form[name='jq_form']");
+
+            var input_total_forms = $('input[name="' + prefix + '-TOTAL_FORMS"]');
+            var col_forms = input_total_forms.attr("value");
+            $('input[name="' + prefix + '-TOTAL_FORMS"]').attr("value", parseInt(col_forms) - 1);
+
+            var input_INITIAL_forms = $('input[name="' + prefix + '-INITIAL_FORMS"]');
+            var col_INITIAL_forms = input_INITIAL_forms.attr("value");
+            $('input[name="' + prefix + '-INITIAL_FORMS"]').attr("value", parseInt(col_forms) - 1);
+
+            var i = 0;
+            $('div.' + prefix).each(function () {
+                $(this).find('input, select, textarea').each(function () {
+                    var name = $(this).attr("name").split('-')[2];
+                    $(this).attr("name", prefix + '-' + i + "-" + name);
+                    $(this).attr("id", "id_" + prefix + "-" + i + "-" + name);
+                });
+                i = i + 1;
+            });
+            return false;
+        }
+    </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+
+            $('div.hide_phone').hide();
+
+            $('div.phone').each(function () {
+                $(this).find('a.remove').click(function () {
+                    return delete_form(this, 'phone');
+                })
+            });
+
+            $('div.hide_phone').each(function () {
+                $(this).find('a.remove').click(function () {
+                    return delete_form(this, 'phone');
+                })
+            });
+
+            $('a.phone').click(function () {
+                return add_form('phone');
+            })
+        })
+    </script>
 {% endblock %}

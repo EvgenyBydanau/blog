@@ -70,3 +70,14 @@ class Country(models.Model):
         return self.text
 
 
+class UserPhone(models.Model):
+    user = models.ForeignKey('accounts.User')
+    code = models.CharField(verbose_name="Code", max_length=10, blank=True, null=True)
+    number = models.CharField(verbose_name="Number", max_length=50, blank=True, null=True)
+    created_at = models.DateTimeField(verbose_name="Creation date", auto_now_add=True)
+    updated_at = models.DateTimeField(verbose_name="Update date", auto_now=True)
+
+    def __str__(self):
+        return str(self.number)
+
+

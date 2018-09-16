@@ -6,11 +6,12 @@ from django.contrib.auth import (
    logout
 )
 from accounts.models import User
-from .forms import UserLoginForm, UserRegisterForm
+from .forms import UserLoginForm, UserRegisterForm, PhoneForm
 from django.http import HttpResponseRedirect
 from django import forms
 from django.http import Http404
 from django.contrib import messages
+from django.forms import formset_factory
 
 # Create your views here.
 
@@ -29,30 +30,36 @@ def login_view(request):
 
 def register_view(request):
     title = "Register"
-    form = UserRegisterForm()
+    form = UserRegisterForm(request.POST or None)
+    formset = formset_factory(PhoneForm)
+    formset = formset(request.POST or None, prefix='phone')
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST or None)
         if form.is_valid():
             # user = form.save(commit=False)
             if not (User.objects.filter(email=form.cleaned_data['email']).exists()):
-                User.objects.create_user(email=form.cleaned_data['email'],
-                                         password=form.cleaned_data['password'],
-                                         country=form.cleaned_data['country'],
-                                         birth_date=form.cleaned_data['birth_date'])
+                user = User.objects.create_user(email=form.cleaned_data['email'],
+                                                password=form.cleaned_data['password'],
+                                                country=form.cleaned_data['country'],
+                                                birth_date=form.cleaned_data['birth_date'])
                 # user.set_password(user.password)
                 # user.save()
-                user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data.get('password'))
-                login(request, user)
+                for form in formset:
+                    if form.is_valid():
+                        phone = form.save(commit=False)
+                        phone.user = user
+                        phone.save()
+
+                authenticated_user = authenticate(email=request.POST['email'], password=request.POST['password'])
+                login(request, authenticated_user)
                 return HttpResponseRedirect('/')
             else:
-               raise forms.ValidationError('Userrrr with that email or password already exists')
+                raise forms.ValidationError('Userrrr with that email or password already exists')
     return render(request, "registration_form.html", locals())
 
 
 def logout_view(request):
     logout(request)
     return redirect("/")
-
 
 
 def verify(request, uuid):

@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     'posts',
     'accounts',
     'bootstrap3',
-
-
+    'jquery',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
@@ -132,7 +131,6 @@ EMAIL_HOST_PASSWORD = ""
 EMAIL_USE_TLS = True
 
 
-
 # REDIS related settings
 REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
@@ -143,6 +141,9 @@ CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 

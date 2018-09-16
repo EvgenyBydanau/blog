@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Country, Comment
+from .models import Country, Comment, UserPhone
 from accounts.models import User
 
 
@@ -22,3 +22,10 @@ class CommentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Comment, CommentAdmin)
+
+
+class UserPhoneAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(UserPhone, UserPhoneAdmin)

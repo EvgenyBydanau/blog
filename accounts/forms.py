@@ -6,7 +6,7 @@ from django.contrib.auth import (
    logout
 )
 from dal import autocomplete
-from posts.models import Country
+from posts.models import Country, UserPhone
 
 User = get_user_model()
 
@@ -54,5 +54,26 @@ class UserRegisterForm(forms.ModelForm):
         if email_qs.exists():
             raise forms.ValidationError("This email has already been registered")
         return email
+
+
+class PhoneForm(forms.ModelForm):
+    code = forms.CharField(label='Code', widget=forms.TextInput(attrs={'style': "width: 100px;"
+                                                                                "height: 34px;"
+                                                                                "background-color: #fff;"
+                                                                                "padding: 6px 12px;"
+                                                                                "border: 1px solid #ccc;"
+                                                                                "border-radius: 4px;"}))
+    number = forms.CharField(label="Number",  widget=forms.TextInput(attrs={'style': "width: 300px;"
+                                                                                     "height: 34px;"
+                                                                                     "background-color: #fff;"
+                                                                                     "padding: 6px 12px;"
+                                                                                     "border: 1px solid #ccc;"
+                                                                                     "border-radius: 4px;"}))
+
+    class Meta:
+        model = UserPhone
+        fields = ('code', 'number')
+
+
 
 
