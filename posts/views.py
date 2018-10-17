@@ -154,6 +154,21 @@ def get_weather(request):
         return render(request, 'graphic.html', {'image_path': image_path})
 
 
+def read_xml(request):
+    import xml.etree.ElementTree as et
+    file = os.path.join(settings.MEDIA_ROOT, 'planes.xml')
+    tree = et.ElementTree(file=file)
+    root = tree.getroot()
+    print(root.tag)
+    planes = []
+    for child in root:
+        print('tag:', child.tag)
+        plane = {}
+        for grandchild in child:
+            print('\ttag:', grandchild.tag, grandchild.text)
+            plane.update({grandchild.tag: grandchild.text})
+        planes.append(plane)
+    return render(request, 'planes.html', locals())
 
 
 

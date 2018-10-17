@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1> Planes</h1>
+    <ul>
+        {% for plane in planes %}
+            <li>Year: {{ plane.year }}, Color: {{ plane.color }}, Model: {{ plane.model }}, Make: {{ plane.make }} </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
