@@ -3,11 +3,11 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Sum, Min, Max, Avg, Count
 from itertools import chain
 from collections import Counter
 import datetime
-from .models import Post, Comment
+from .models import Post, Comment, Country, City
 from .forms import PostForm, CommentForm
 from .decorators import superuser_only, user_is_post_author
 from django.contrib.contenttypes.models import ContentType
@@ -169,6 +169,19 @@ def read_xml(request):
             plane.update({grandchild.tag: grandchild.text})
         planes.append(plane)
     return render(request, 'planes.html', locals())
+
+
+def aggregate_countries(request):
+    sum_min_population = Country.objects.aggregate(Sum('population'), Min('population'))
+    result = Country.objects.aggregate(average_pop=Avg('population'))
+    return render(request, 'aggregate_countries.html', locals())
+
+
+def annotate(request):
+    countries = Country.objects.annotate(num_cities=Count('city'))
+    print(countries[1].num_cities)
+    return render(request, 'annotate.html', locals())
+
 
 
 

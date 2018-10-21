@@ -63,11 +63,21 @@ class Comment(models.Model):
 
 class Country(models.Model):
     text = models.CharField(verbose_name='Country', max_length=500, blank=True, null=True)
+    population = models.IntegerField(verbose_name='Population', blank=True, null=True)
     created_at = models.DateTimeField(verbose_name="Creation date", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="Update date", auto_now=True)
 
     def __str__(self):
         return self.text
+
+
+class City(models.Model):
+    name = models.CharField(verbose_name='City', max_length=100)
+    population = models.IntegerField(verbose_name='population', blank=True, null=True)
+    country = models.ForeignKey(Country, verbose_name='Country', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
 
 
 class UserPhone(models.Model):

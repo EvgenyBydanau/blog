@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^(?P<id>[0-9]+)/delete/$', views.post_delete, name="delete"),
     url(r'get-weather$', views.get_weather, name="get-weather"),
     url(r'read-xml$', views.read_xml, name="read-xml"),
+    url(r'aggregate-countries$', views.aggregate_countries, name='aggregate_countries'),
+    url(r'annotate$', views.annotate, name='annotate'),
 
     # Autocomplete
     url(r'^country-autocomplete/$', CountryAutocomplete.as_view(),  name='country-autocomplete',)
