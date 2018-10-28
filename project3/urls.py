@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^logout/', logout_view, name="logout"),
     url(r'^verify/(?P<uuid>[a-z0-9\-]+)/', verify, name='verify'),
     url(r'^', include('posts.urls', namespace='posts')),
+    url(r'^class-based-views/', include('class_based_views.urls'))
 
 
 ]

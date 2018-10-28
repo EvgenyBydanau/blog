@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+
+<h1>Create</h1>
+
+
+    <form action="." method="POST" novalidate="novalidate">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+     <button>Submit</button>
+    </form>
+
+
+{% endblock %}
