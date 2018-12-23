@@ -180,6 +180,16 @@ def aggregate_countries(request):
 def annotate(request):
     countries = Country.objects.annotate(num_cities=Count('city'))
     print(countries[1].num_cities)
+
+    qss = City.objects.all().values('country__text')
+
+    print(qss)
+
+    # Number of cities with x country
+    qs = City.objects.all().values('country__text').annotate(number_of_cities=Count('country__text'))
+
+    print(qs)
+
     return render(request, 'annotate.html', locals())
 
 
