@@ -76,7 +76,7 @@ def post_list(request, date=None):
     return render(request, "post_list.html", locals())
 
 
-@login_required(login_url='/login/')
+# @login_required(login_url='/login/')
 @superuser_only
 def post_create(request):
     form = PostForm(request.POST or None, request.FILES or None)
@@ -113,7 +113,7 @@ def post_detail(request, id=None):
     return render(request, "post_detail.html", locals())
 
 
-@login_required(login_url='/login/')
+# @login_required(login_url='/login/')
 @user_is_post_author
 def post_update(request, id=None):
     instance = get_object_or_404(Post, id=id)

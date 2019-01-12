@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'posts.middleware.LoginRequiredMiddleware'
 ]
 
 ROOT_URLCONF = 'project3.urls'
@@ -150,6 +151,13 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
 
+LOGIN_URL ='/login/'
+
+LOGIN_EXEMPT_URLS = (
+    r'^login/$',
+    r'^logout/$',
+    r'^register/$'
+)
 
 try:
     from .local_settings import *
