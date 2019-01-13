@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load posts_extras %}
 
 
 {% block content %}
@@ -10,11 +11,12 @@
         </button>
     </form>
 
+    <p>There are {% total_posts %} posts</p>
 
     {% for post in posts %}
 
         <div class="blog-post">
-            <h2 class="blog-post-title">{{ post.title }}</h2>
+            <h2 class="blog-post-title">{{ post.title|huilovanie }}</h2>
             <p class="blog-post-meta">{{ post.timestamp| timesince }} ago <a href="{{ post.get_absolute_url }}">{{ post.user }}</a></p>
             {% if post.image %}
                 <img style="width:400px; height:250px" src="{{ post.image.url }}" class="img-responsive"/>
