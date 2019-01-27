@@ -157,7 +157,8 @@ LOGIN_URL ='/login/'
 LOGIN_EXEMPT_URLS = (
     r'^login/$',
     r'^logout/$',
-    r'^register/$'
+    r'^register/$',
+    r'^$'
 )
 
 try:
