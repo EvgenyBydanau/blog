@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-
+from django.views import View
 from django.views.generic import (
    CreateView,
    DetailView,
@@ -11,8 +11,15 @@ from django.views.generic import (
 
 from posts.models import Post
 from .forms import PostModelForm
+from .mixins import ListMixin
 
 # Create your views here.
+
+
+class BaseView(ListMixin, View):
+    def get(self, request, *args, **kwargs):
+        object_list = super(BaseView, self).get_posts_list()
+        return render(request, 'class-based-views/post_list.html', locals())
 
 
 class PostListView(ListView):

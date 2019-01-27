@@ -70,6 +70,13 @@ class Country(models.Model):
     def __str__(self):
         return self.text
 
+    @classmethod
+    def country_creator(cls, data):
+        text, population = data
+        country = cls(text=text, population=population)
+        country.save()
+        return country
+
 
 class City(models.Model):
     name = models.CharField(verbose_name='City', max_length=100)

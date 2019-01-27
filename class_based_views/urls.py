@@ -6,11 +6,12 @@ from .views import (
     PostDetailView,
     PostCreateView,
     PostUpdateView,
-    PostDeleteView
+    PostDeleteView,
+    BaseView
 )
 app_name = 'class-based-views'
 urlpatterns = [
-
+    url(r'^posts/$', BaseView.as_view(), name="posts"),
     url(r'^post-list/$', PostListView.as_view(), name="post-list"),
     url(r'^post/(?P<pk>[0-9]+)/$', PostDetailView.as_view(), name="post-detail"),
     url(r'^create/$', PostCreateView.as_view(), name="post-create"),
