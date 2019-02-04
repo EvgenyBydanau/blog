@@ -17,7 +17,8 @@
 
         <div class="blog-post">
             <h2 class="blog-post-title">{{ post.title|huilovanie }}</h2>
-            <p class="blog-post-meta">{{ post.timestamp| timesince }} ago <a href="{{ post.get_absolute_url }}">{{ post.user }}</a></p>
+            <p class="blog-post-meta">{{ post.timestamp| timesince }} ago <a
+                    href="{{ post.get_absolute_url }}">{{ post.user }}</a></p>
             {% if post.image %}
                 <img style="width:400px; height:250px" src="{{ post.image.url }}" class="img-responsive"/>
             {% endif %}
@@ -35,17 +36,24 @@
             <li> <a href="?page={{ posts.previous_page_number }}">previous</a></li>
         {% endif %}
 
-        <span class="current">
+         <span class="current">
             Page {{ posts.number }} of {{ posts.paginator.num_pages }}.
         </span>
 
-        {% if posts.has_next %}
-            <li> <a href="?page={{ posts.next_page_number }}">next</a></li>
-        {% endif %}
+         {% if posts.has_next %}
+             <li> <a href="?page={{ posts.next_page_number }}">next</a></li>
+         {% endif %}
      </ul>
     </span>
     </div>
-
+    <button id="download">Download file</button>
+    <script>
+        $(document).ready(function () {
+            $("#download").click(function () {
+                window.location.href = location.origin + '/media/2018-calendar.xlsx'
+            });
+        });
+    </script>
 
 
 {% endblock %}
