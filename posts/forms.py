@@ -1,15 +1,17 @@
 from django import forms
 from .models import Post, Comment
+import datetime
 
 
 class PostForm(forms.ModelForm):
     # title = forms.ModelChoiceField(queryset=Post.objects.all().order_by("title"))
     title = forms.CharField(error_messages={'required': 'You have to fill in this filed'})
     information_correct = forms.BooleanField(required=True)
+    start_date = forms.MultipleChoiceField(choices=(('2019-01-01', '2019-01-01'), ('2019-01-01', '2019-02-01')))
 
     class Meta:
         model = Post
-        fields = ["title", "information_correct", "content", "image"]
+        fields = ["title", "information_correct", "content", "image", "start_date"]
 
     def clean(self):
         cleaned_data = super(PostForm, self).clean()
