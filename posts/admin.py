@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Country, Comment, UserPhone, City
+from .models import Country, Comment, UserPhone, City, Post
 from accounts.models import User
 
 
@@ -36,3 +36,10 @@ class CityAdmin(admin.ModelAdmin):
 
 
 admin.site.register(City, CityAdmin)
+
+
+class PostAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(Post, PostAdmin)

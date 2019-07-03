@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'read-xml$', views.read_xml, name="read-xml"),
     url(r'aggregate-countries$', views.aggregate_countries, name='aggregate_countries'),
     url(r'annotate$', views.annotate, name='annotate'),
+    url(r'get-country/(?P<id>[0-9]+)/$', views.get_country, name='get_country'),
 
     # Autocomplete
     url(r'^country-autocomplete/$', CountryAutocomplete.as_view(),  name='country-autocomplete',)

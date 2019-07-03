@@ -149,6 +149,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATIC_URL = '/static/'
 
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "posts/static_in_development"),
+
+]
+
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
@@ -159,7 +166,8 @@ LOGIN_EXEMPT_URLS = (
     r'^login/$',
     r'^logout/$',
     r'^register/$',
-    r'^$'
+    r'^$',
+    r'get-country/(?P<id>[0-9]+)/'
 )
 
 try:

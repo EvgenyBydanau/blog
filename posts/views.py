@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required
@@ -16,6 +16,8 @@ import os
 from django.conf import settings
 from matplotlib import pyplot as plt
 import six
+from django.forms.models import model_to_dict
+
 
 
 def post_list(request, date=None):
@@ -193,7 +195,13 @@ def annotate(request):
     return render(request, 'annotate.html', locals())
 
 
-
+def get_country(request, id):
+    try:
+        post = Country.objects.get(id=id)
+    except Country.DoesNotExist:
+        return JsonResponse('Nothing', safe=False)
+    else:
+        return JsonResponse(model_to_dict(post))
 
 
 
